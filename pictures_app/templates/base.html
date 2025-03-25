@@ -31,6 +31,9 @@
             <ul class="navbar-nav ms-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
+                        <span class="nav-link text-light">👤 {{ user.username }}</span>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'upload_picture' %}">Upload</a>
                     </li>
                     <li class="nav-item">
