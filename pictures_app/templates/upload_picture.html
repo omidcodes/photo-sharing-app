@@ -4,11 +4,11 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <h2 class="mb-4">Upload Picture</h2>
-        <form method="post" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
+            <input type="file" name="picture" accept="image/*" required>
             <button type="submit" class="btn btn-primary">Upload</button>
-        </form>
+        </form>        
     </div>
 </div>
 {% endblock %}

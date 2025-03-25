@@ -4,10 +4,11 @@ from .utils import upload_picture_to_azure
 from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 @login_required
 def upload_picture(request):
-    if request.method == 'POST' and request.FILES['picture']:
+    if request.method == 'POST' and request.FILES.get('picture'):
         picture = request.FILES['picture']
         # Upload picture to Azure Blob Storage
         picture_url = upload_picture_to_azure(picture)
@@ -18,7 +19,8 @@ def upload_picture(request):
         location = request.POST.get('location')
 
         PictureModel.objects.create(title=title, caption=caption, location=location, picture_url=picture_url)
-        return HttpResponse('Picture uploaded successfully!')
+        messages.success(request, 'Picture uploaded successfully!')
+        return redirect('gallery')  # Or your desired redirect
     return render(request, 'upload_picture.html')
 
 def view_pictures(request):
