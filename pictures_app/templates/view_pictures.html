@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pictures</title>
+</head>
+<body>
+    <h1>Pictures</h1>
+    {% for picture in pictures %}
+        <h2>{{ picture.title }}</h2>
+        <p>{{ picture.caption }}</p>
+        <p>Location: {{ picture.location }}</p>
+        <a href="{{ picture_app.picture_url }}" target="_blank">Watch Picture</a>
+        <br><br>
+    {% endfor %}
+</body>
+</html>
