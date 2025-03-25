@@ -1,19 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Picture</title>
-</head>
-<body>
-    <h1>Upload Picture</h1>
-    <form action="/pictures/upload/" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="text" name="title" placeholder="Title" required><br>
-        <textarea name="caption" placeholder="Caption"></textarea><br>
-        <input type="text" name="location" placeholder="Location"><br>
-        <input type="file" name="picture" accept="picture/*" required><br>
-        <button type="submit">Upload Picture</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Upload Photo{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2 class="mb-4">Upload Picture</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from users_app.forms import RegisterForm
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib import messages
 
 def register_view(request):
     if request.method == 'POST':
@@ -10,6 +11,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])  # Hash the password
             user.save()
+            messages.success(request, 'Account created successfully!')
             return redirect('login')
     else:
         form = RegisterForm()

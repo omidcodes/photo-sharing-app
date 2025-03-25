@@ -1,18 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pictures</title>
-</head>
-<body>
-    <h1>Pictures</h1>
+{% extends "base.html" %}
+{% block title %}Gallery{% endblock %}
+{% block content %}
+<h2 class="mb-4">Gallery</h2>
+<div class="row">
     {% for picture in pictures %}
-        <h2>{{ picture.title }}</h2>
-        <p>{{ picture.caption }}</p>
-        <p>Location: {{ picture.location }}</p>
-        <a href="{{ picture_app.picture_url }}" target="_blank">Watch Picture</a>
-        <br><br>
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ picture.image_url }}" class="card-img-top" alt="{{ picture.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ picture.title }}</h5>
+                    <p class="card-text">{{ picture.caption }}</p>
+                    <p class="text-muted small">{{ picture.location }}</p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>No pictures uploaded yet.</p>
     {% endfor %}
-</body>
-</html>
+</div>
+{% endblock %}

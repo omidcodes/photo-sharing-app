@@ -24,3 +24,7 @@ def upload_picture(request):
 def view_pictures(request):
     pictures = PictureModel.objects.all()
     return render(request, 'view_pictures.html', {'pictures': pictures})
+
+
+def home_view(request):
+    return render(request, 'home.html')  # make sure you have a template called home.html
