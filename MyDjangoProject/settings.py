@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from the .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -89,10 +94,11 @@ WSGI_APPLICATION = 'MyDjangoProject.wsgi.application'
 #     }
 # }
 
-# # Azure Blob Storage settings
-# AZURE_STORAGE_ACCOUNT_NAME = 'your-azure-storage-account-name'
-# AZURE_STORAGE_ACCOUNT_KEY = 'your-azure-storage-account-key'
-# AZURE_STORAGE_CONTAINER_NAME = 'pictures'
+# Azure Blob Storage settings
+AZURE_STORAGE_ACCOUNT_NAME = os.getenv('AZURE_STORAGE_ACCOUNT_NAME')
+AZURE_STORAGE_ACCOUNT_KEY = os.getenv('AZURE_STORAGE_ACCOUNT_KEY')
+AZURE_STORAGE_CONTAINER_NAME = os.getenv('AZURE_STORAGE_CONTAINER_NAME')
+
 
 DATABASES = {
     'default': {
