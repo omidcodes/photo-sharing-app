@@ -82,30 +82,46 @@ WSGI_APPLICATION = 'MyDjangoProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# TODO : Complete Me ........................................
+# TODO : Complete Me ...........................................
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', 1433),  # Default port 1433 for SQL Server
+        'OPTIONS': {
+            'driver': 'ODBC Driver 18 for SQL Server',  # Ensure this driver is used
+            'extra_params': 'TrustServerCertificate=yes',  # Optional: Trust the server's certificate
+        },
+    }
+}
+
+
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'your-db-name',
-#         'USER': 'your-db-user',
-#         'PASSWORD': 'your-db-password',
-#         'HOST': 'your-db-host',
-#         'PORT': '3306',
+#          'ENGINE': 'mssql',
+#          'Trusted_Connection': 'no', 
+#          'OPTIONS': { 
+#              'driver': 'ODBC Driver 17 for SQL Server', 
+#              'extra_params': 'Server=tcp:mysqlserver20001927-1.database.windows.net,1433;Initial Catalog=myDatabaseForUlsterDB01;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";' }
+#      }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
 
 # Azure Blob Storage settings
 AZURE_STORAGE_ACCOUNT_NAME = os.getenv('AZURE_STORAGE_ACCOUNT_NAME')
 AZURE_STORAGE_ACCOUNT_KEY = os.getenv('AZURE_STORAGE_ACCOUNT_KEY')
 AZURE_STORAGE_CONTAINER_NAME = os.getenv('AZURE_STORAGE_CONTAINER_NAME')
-
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation

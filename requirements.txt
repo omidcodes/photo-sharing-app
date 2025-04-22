@@ -1,4 +1,5 @@
 Django
 azure-storage-blob
-mysqlclient
 python-dotenv
+pyodbc
+mssql-django
