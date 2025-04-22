@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-xqcqo#&l@r=j$b_pw8vd+$7ex50w3bqcw)q8ddjd5=5sgrj^x6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -82,8 +82,6 @@ WSGI_APPLICATION = 'MyDjangoProject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# TODO : Complete Me ...........................................
-
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
@@ -99,17 +97,7 @@ DATABASES = {
     }
 }
 
-
-# DATABASES = {
-#     'default': {
-#          'ENGINE': 'mssql',
-#          'Trusted_Connection': 'no', 
-#          'OPTIONS': { 
-#              'driver': 'ODBC Driver 17 for SQL Server', 
-#              'extra_params': 'Server=tcp:mysqlserver20001927-1.database.windows.net,1433;Initial Catalog=myDatabaseForUlsterDB01;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;Authentication="Active Directory Default";' }
-#      }
-# }
-
+# For sqlite3 (dev)
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
