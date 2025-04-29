@@ -1,4 +1,6 @@
-name: Build and deploy Django app to Azure Web App - myWebAppUlsterScalable01
+# Deploy Django app to Azure Web App - myWebAppUlsterScalable01
+
+name: Build and Deploy Django App to Azure
 
 on:
   push:
@@ -19,10 +21,16 @@ jobs:
         with:
           python-version: '3.13'
 
-      - name: Install dependencies
+      - name: Install system dependencies for pyodbc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unixodbc-dev gcc g++
+
+      - name: Create and activate virtual environment, install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
+          pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Django migrations and collectstatic
@@ -34,24 +42,27 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_PORT: ${{ secrets.DB_PORT }}
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
+          AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
         run: |
           source venv/bin/activate
-          python manage.py migrate
+          python manage.py migrate --noinput
           python manage.py collectstatic --noinput
 
-      - name: Zip for deployment
-        run: zip release.zip . -r -x venv/\* .git/\* 
+      - name: Zip the application for deployment
+        run: |
+          zip -r release.zip . -x "venv/*" ".git/*"
 
-      - name: Upload artifact
+      - name: Upload artifact for deployment
         uses: actions/upload-artifact@v4
         with:
-          name: python-app
+          name: django-app
           path: release.zip
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'myWebAppUlsterScalable01'
+          app-name: 'myWebAppUlsterScalable01'  # Update to your exact Azure Web App name
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E852983D5AD745A4937CCDD5492304B7 }}
-          
