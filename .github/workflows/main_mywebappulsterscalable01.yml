@@ -53,4 +53,5 @@ jobs:
         with:
           app-name: 'myWebAppUlsterScalable01'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_XXXXXXXXXXXXXX }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E852983D5AD745A4937CCDD5492304B7 }}
+          
