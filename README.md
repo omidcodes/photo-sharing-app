@@ -1,53 +1,188 @@
 
-# Do not forget to change .env file in real environment.
+# 📸 Photo Sharing App (Django + Azure)
 
+A full-stack Django application for sharing photos, with the ability to register/login, upload photos, rate, and comment. It's designed with scalability in mind using Azure cloud services and automated CI/CD via GitHub Actions.
 
+---
 
-# Django Photo Sharing App
+## 🚀 Features
 
-This is a web application similar to a basic version of Instagram. It allows users to upload, view, comment on, and rate pictures.
+- User registration and login/logout support
+- Upload images with metadata: title, caption, location, and tagged people
+- View all uploaded pictures in a paginated gallery
+- Rate pictures (0–5) and leave comments
+- Store media files in Azure Blob Storage
+- Use Azure SQL Database as backend
+- Secure login with CSRF protection
+- GitHub Actions for CI/CD deployment to Azure Web App
 
-## 📌 Features
+---
 
-- **User Authentication**: Users can register, log in, and log out.
-- **Photo Upload**: Authenticated users can upload pictures along with optional metadata:
-  - Title
-  - Caption
-  - Location (e.g., "Photo taken at: ...")
-  - People present
-- **Gallery View**: All uploaded pictures are displayed in a gallery view with:
-  - Title, caption, location, people present
-  - Uploaded by username
-  - Paginated (9 pictures per page)
-- **Rating System**: Users can rate each picture from 1 to 5. Average rating is calculated and shown. Duplicate ratings by the same user are updated.
-- **Commenting**: Users can add comments under each picture. Comments include timestamp and username.
-- **Responsive Design**: Layout is styled using Bootstrap and FontAwesome for icons.
-- **Footer**: Displays creator name and LinkedIn profile.
+## 📦 Requirements
 
-## 👤 Developer
+- Python 3.12
+- Django 5.x
+- Azure SQL Database (server + database created)
+- Azure Blob Storage (container for media)
+- Azure Web App (Linux, Python 3.12)
+- `pip`, `virtualenv`
 
-This website was designed and developed by **Omid Hashemzadeh**  
-[LinkedIn Profile](https://www.linkedin.com/in/omid-hashemzadeh-2b3048113/)
+---
 
-## 🚀 Setup Instructions
+## 🧰 Local Development Setup
 
-1. Clone the repository
-2. Create and activate a virtual environment
-3. Install dependencies with `pip install -r requirements.txt`
-4. Run migrations:
-   ```
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
-5. Create a superuser (optional):
-   ```
-   python manage.py createsuperuser
-   ```
-6. Run the development server:
-   ```
-   python manage.py runserver
-   ```
+### 1. Clone the Project
+
+```bash
+git clone https://github.com/ohashemzadeh/photo-sharing-app.git
+cd photo-sharing-app
+```
+
+### 2. Create and Activate Virtual Environment
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### 3. Install Project Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Create a `.env` File
+
+```ini
+SECRET_KEY=your-secret-key
+DEBUG=True
+
+DB_NAME=your-db-name
+DB_USER=your-db-user
+DB_PASSWORD=your-db-password
+DB_HOST=your-db-host.database.windows.net
+DB_PORT=1433
+
+AZURE_STORAGE_ACCOUNT_NAME=yourstorageaccount
+AZURE_STORAGE_ACCOUNT_KEY=yourstoragekey
+AZURE_STORAGE_CONTAINER_NAME=media
+
+CSRF_TRUSTED_ORIGINS=https://your-deployed-azure-site.azurewebsites.net
+```
+
+### 5. Apply Migrations
+
+```bash
+python manage.py migrate
+```
+
+### 6. Create Superuser (optional)
+
+```bash
+python manage.py createsuperuser
+```
+
+### 7. Run the Development Server
+
+```bash
+python manage.py runserver
+```
+
+Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) and login or register.
+
+---
+
+## ☁️ Azure Setup Guide
+
+### 1. Azure SQL Database
+
+- Use Azure Portal to create an SQL Server and database.
+- Set firewall to allow your IP and GitHub Actions.
+- Create admin username and password.
+- Save all values for `.env`.
+
+### 2. Azure Blob Storage
+
+- Create a storage account and a container (e.g. `media`).
+- Get the account key and name.
+- Container access can be public or private (Django handles auth).
+
+### 3. Azure Web App
+
+- Create a Linux Web App for Python 3.12.
+- Configure startup command (optional): `gunicorn MyDjangoProject.wsgi`
+- Connect it to GitHub repo via Deployment Center.
+- Add environment variables or use GitHub secrets.
+
+### 4. Add `CSRF_TRUSTED_ORIGINS`
+
+You **must** set your Azure Web App domain here, or CSRF will block login:
+
+```ini
+CSRF_TRUSTED_ORIGINS=https://your-web-app.azurewebsites.net
+```
+
+---
+
+## 🔄 GitHub Actions Deployment
+
+A complete workflow is included to:
+
+- Build your Python environment
+- Install `pyodbc` and Microsoft ODBC Driver 18
+- Run Django migrations and collect static files
+- Deploy to Azure Web App
+
+### Required GitHub Secrets
+
+Add these secrets to GitHub **(repository or environment scope)**:
+
+- `SECRET_KEY`
+- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
+- `AZURE_STORAGE_ACCOUNT_NAME`, `AZURE_STORAGE_ACCOUNT_KEY`, `AZURE_STORAGE_CONTAINER_NAME`
+- `AZUREAPPSERVICE_PUBLISHPROFILE_...`
+- `CSRF_TRUSTED_ORIGINS` → `https://your-web-app.azurewebsites.net`
+
+---
+
+## 🧪 Local Test
+
+After setting up:
+
+```bash
+python manage.py migrate
+python manage.py runserver
+```
+
+You should be redirected to `/login/` when accessing `/` if unauthenticated.
+
+---
+
+## 🔐 Security Best Practices
+
+- CSRF protection is enforced via `CSRF_TRUSTED_ORIGINS`
+- Never disable CSRF middleware globally
+- Avoid hardcoding `SECRET_KEY` in `settings.py`; always use environment variables
+
+---
+
+## 📁 Project Structure Highlights
+
+- `users_app`: Registration, login, logout views
+- `pictures_app`: Photo upload, gallery, rating, and comments
+- `templates/`: HTML files for pages and forms
+- `.github/workflows/`: CI/CD pipeline config for Azure
+
+---
+
+## 👤 Author
+
+Designed & Developed by **Omid Hashemzadeh**  
+[LinkedIn](https://www.linkedin.com/in/omid-hashemzadeh-2b3048113/)  
+© 2025
+
+---
 
 ## 📝 License
 
-This project is for educational and portfolio purposes.
+Licensed under the [MIT License](LICENSE).
