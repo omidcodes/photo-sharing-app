@@ -94,7 +94,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', 1433),  # Default port 1433 for SQL Server
         'OPTIONS': {
             'driver': 'ODBC Driver 18 for SQL Server',  # Ensure this driver is used
-            'extra_params': 'TrustServerCertificate=yes',  # Optional: Trust the server's certificate
+            'extra_params': 'TrustServerCertificate=yes',  # Optional: Trust the server's certificate.
         },
     }
 }
