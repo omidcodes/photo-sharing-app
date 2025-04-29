@@ -11,6 +11,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: environment_production  # 👈 THIS LINE IS REQUIRED (Environment name on Github)
+
 
     steps:
       - name: Checkout code
