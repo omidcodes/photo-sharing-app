@@ -3,33 +3,29 @@
 
 {% block content %}
 <h2 class="mb-4">Gallery</h2>
+
 <div class="row">
-  {% for item in gallery %}
+  {% for item in page_obj %}
     <div class="col-md-4 mb-4">
       <div class="card h-100">
         <img src="{{ item.picture.picture_url }}" class="card-img-top" alt="{{ item.picture.title }}">
         <div class="card-body text-center">
-
           {% if item.picture.title %}
             <h5 class="card-title mb-2">{{ item.picture.title }}</h5>
           {% endif %}
-
           {% if item.picture.caption %}
             <p class="card-text mb-2">{{ item.picture.caption }}</p>
           {% endif %}
-
           {% if item.picture.location %}
             <p class="text-muted small mb-1">
               <i class="fas fa-map-marker-alt"></i> Photo taken at: {{ item.picture.location }}
             </p>
           {% endif %}
-
           {% if item.picture.people_present %}
             <p class="text-muted small mb-1">
               <i class="fas fa-users"></i> People present: {{ item.picture.people_present }}
             </p>
           {% endif %}
-
           <p class="text-muted small mt-2">
             <i class="fas fa-user"></i> Uploaded by {{ item.picture.creator.username }}
           </p>
@@ -42,53 +38,35 @@
             <p class="text-muted small">Not rated yet</p>
           {% endif %}
 
-          <form method="POST" class="mt-3">
+          <form method="POST" class="mt-2">
             {% csrf_token %}
+            {{ item.rating_form.score }}
             <input type="hidden" name="picture_id" value="{{ item.picture.id }}">
-          
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="me-2">
-                <label for="score" class="form-label mb-1">Rate this photo:</label>
-                {{ item.rating_form.score }}
-              </div>
-              <div>
-                <button type="submit" name="rating_submit" class="btn btn-sm btn-warning">
-                  <i class="fas fa-star"></i> Submit Rating
-                </button>
-              </div>
-            </div>
+            <button type="submit" name="rating_submit" class="btn btn-sm btn-outline-primary">Submit</button>
           </form>
 
-
-
-
-
-
-
           <hr>
-            <h6 class="mt-3"><i class="fas fa-comments"></i> Comments</h6>
+          <h6 class="mt-3"><i class="fas fa-comments"></i> Comments</h6>
 
-            <div class="text-start">
+          <div class="text-start">
             {% for comment in item.comments %}
-                <p class="mb-1">
+              <p class="mb-1">
                 <strong>{{ comment.user.username }}</strong> <span class="text-muted small">{{ comment.timestamp|date:"M d, H:i" }}</span><br>
                 {{ comment.content }}
-                </p>
+              </p>
             {% empty %}
-                <p class="text-muted">No comments yet.</p>
+              <p class="text-muted">No comments yet.</p>
             {% endfor %}
-            </div>
+          </div>
 
-            <form method="POST" class="mt-2">
+          <form method="POST" class="mt-2">
             {% csrf_token %}
-            {{ item.comment_form.as_p }}
+            {{ item.comment_form.content }}
             <input type="hidden" name="picture_id" value="{{ item.picture.id }}">
             <button type="submit" name="comment_submit" class="btn btn-sm btn-outline-secondary">
-                <i class="fas fa-paper-plane"></i> Post
+              <i class="fas fa-paper-plane"></i> Post
             </button>
-</form>
-
-
+          </form>
 
         </div>
       </div>
@@ -96,5 +74,44 @@
   {% empty %}
     <p>No pictures uploaded yet.</p>
   {% endfor %}
+</div>
+
+<!-- Pagination Controls -->
+<div class="d-flex justify-content-center mt-4">
+  <nav>
+    <ul class="pagination">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&laquo;</span>
+        </li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" aria-hidden="true">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
 </div>
 {% endblock %}

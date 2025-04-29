@@ -1,16 +1,43 @@
+# Environment files
 .env
+.env.*
 
-# Byte-compiled / optimized / DLL files
-*.pyc
+# Python bytecode and cache
 __pycache__/
 *.py[cod]
-*/pycache/*
-
+*/__pycache__/
 
 # C extensions
 *.so
 
-# Distribution / packaging
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.ENV/
+
+# Django static and media files
+staticfiles/
+media/
+*.log
+
+# Database files
+*.sqlite3
+*.db
+
+# Django migration files (optional to ignore by team)
+*/migrations/__pycache__/
+# Uncomment below to ignore all migration files
+# */migrations/*.py
+
+# VS Code and IDE config
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Build and packaging
 bin/
 build/
 develop-eggs/
@@ -25,31 +52,31 @@ var/
 .installed.cfg
 *.egg
 
-# Installer logs
+# Pip logs
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Unit test / coverage reports
+# Testing & coverage
 .tox/
 .coverage
-.cache
+.cache/
 nosetests.xml
 coverage.xml
+htmlcov/
 
 # Translations
 *.mo
+*.pot
 
-# Mr Developer
+# Developer tools
 .mr.developer.cfg
 .project
 .pydevproject
-
-# Rope
 .ropeproject
 
-# Django stuff:
-*.log
-*.pot
-
-# Sphinx documentation
+# Documentation
 docs/_build/
+
+# System files
+.DS_Store
+Thumbs.db

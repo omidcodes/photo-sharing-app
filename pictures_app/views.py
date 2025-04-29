@@ -2,15 +2,20 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from pictures_app.utils import upload_picture_to_azure
 from .models import PictureModel, Comment, Rating
+from .models import PictureModel, Comment, Rating
+
 from .forms import PictureForm, CommentForm, RatingForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from django.contrib.auth.decorators import login_required
-from .models import PictureModel, Comment, Rating
 from .forms import CommentForm, RatingForm
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.shortcuts import render, redirect
+from django.db.models import Avg
 
+from django.contrib.auth.decorators import login_required
 
 
 @login_required
@@ -45,10 +50,15 @@ def view_galleries(request):
         if 'rating_submit' in request.POST:
             rating_form = RatingForm(request.POST)
             if rating_form.is_valid():
-                rating = rating_form.save(commit=False)
-                rating.user = request.user
-                rating.picture = picture
-                rating.save()
+                existing_rating = Rating.objects.filter(user=request.user, picture=picture).first()
+                if existing_rating:
+                    existing_rating.score = rating_form.cleaned_data['score']
+                    existing_rating.save()
+                else:
+                    rating = rating_form.save(commit=False)
+                    rating.user = request.user
+                    rating.picture = picture
+                    rating.save()
 
         elif 'comment_submit' in request.POST:
             comment_form = CommentForm(request.POST)
@@ -61,8 +71,8 @@ def view_galleries(request):
         return redirect('view_galleries')
 
     pictures = PictureModel.objects.all()
-    enriched_pictures = []
 
+    enriched_pictures = []
     for pic in pictures:
         average_rating = pic.ratings.aggregate(Avg('score'))['score__avg']
         comments = pic.comments.order_by('-timestamp')
@@ -74,4 +84,9 @@ def view_galleries(request):
             'comments': comments
         })
 
-    return render(request, 'view_galleries.html', {'gallery': enriched_pictures})
+    # Apply pagination here
+    paginator = Paginator(enriched_pictures, 9)  # 9 pictures per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'view_galleries.html', {'page_obj': page_obj})
