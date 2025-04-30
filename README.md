@@ -1,4 +1,3 @@
-
 # 📸 Photo Sharing App (Django + Azure)
 
 A full-stack Django application for sharing photos, with the ability to register/login, upload photos, rate, and comment. It's designed with scalability in mind using Azure cloud services and automated CI/CD via GitHub Actions.
@@ -13,6 +12,7 @@ A full-stack Django application for sharing photos, with the ability to register
 - Rate pictures (0–5) and leave comments
 - Store media files in Azure Blob Storage
 - Use Azure SQL Database as backend
+- Caching with Azure Redis Cache (toggleable)
 - Secure login with CSRF protection
 - GitHub Actions for CI/CD deployment to Azure Web App
 
@@ -25,6 +25,7 @@ A full-stack Django application for sharing photos, with the ability to register
 - Azure SQL Database (server + database created)
 - Azure Blob Storage (container for media)
 - Azure Web App (Linux, Python 3.12)
+- Azure Cache for Redis (optional for caching)
 - `pip`, `virtualenv`
 
 ---
@@ -67,7 +68,14 @@ AZURE_STORAGE_ACCOUNT_NAME=yourstorageaccount
 AZURE_STORAGE_ACCOUNT_KEY=yourstoragekey
 AZURE_STORAGE_CONTAINER_NAME=media
 
-CSRF_TRUSTED_ORIGINS=https://your-deployed-azure-site.azurewebsites.net
+CSRF_TRUSTED_ORIGINS=https://your-web-app.azurewebsites.net
+
+# Optional Caching with Azure Redis
+ENABLE_REDIS_CACHE=True
+REDIS_HOST=yourcache.redis.cache.windows.net
+REDIS_PORT=6380
+REDIS_PASSWORD=your-redis-access-key
+CACHE_TIMEOUT=300
 ```
 
 ### 5. Apply Migrations
@@ -105,22 +113,21 @@ Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) and login or register.
 
 - Create a storage account and a container (e.g. `media`).
 - Get the account key and name.
-- Container access can be public or private (Django handles auth).
+- Container access can be public or private.
 
-### 3. Azure Web App
+### 3. Azure Cache for Redis (Optional)
+
+- Create a Redis Cache resource via Azure Portal.
+- Use Basic C0 tier for dev/testing.
+- Copy hostname and access key.
+- Add to `.env` as shown above.
+
+### 4. Azure Web App
 
 - Create a Linux Web App for Python 3.12.
 - Configure startup command (optional): `gunicorn MyDjangoProject.wsgi`
-- Connect it to GitHub repo via Deployment Center.
-- Add environment variables or use GitHub secrets.
-
-### 4. Add `CSRF_TRUSTED_ORIGINS`
-
-You **must** set your Azure Web App domain here, or CSRF will block login:
-
-```ini
-CSRF_TRUSTED_ORIGINS=https://your-web-app.azurewebsites.net
-```
+- Connect GitHub repo via Deployment Center.
+- Add environment variables in **App Settings**.
 
 ---
 
@@ -129,25 +136,24 @@ CSRF_TRUSTED_ORIGINS=https://your-web-app.azurewebsites.net
 A complete workflow is included to:
 
 - Build your Python environment
-- Install `pyodbc` and Microsoft ODBC Driver 18
+- Install ODBC Driver and Redis support
 - Run Django migrations and collect static files
 - Deploy to Azure Web App
 
 ### Required GitHub Secrets
 
-Add these secrets to GitHub **(repository or environment scope)**:
+Add these secrets under `Settings > Secrets > Actions`:
 
 - `SECRET_KEY`
 - `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
 - `AZURE_STORAGE_ACCOUNT_NAME`, `AZURE_STORAGE_ACCOUNT_KEY`, `AZURE_STORAGE_CONTAINER_NAME`
 - `AZUREAPPSERVICE_PUBLISHPROFILE_...`
-- `CSRF_TRUSTED_ORIGINS` → `https://your-web-app.azurewebsites.net`
+- `CSRF_TRUSTED_ORIGINS`
+- `ENABLE_REDIS_CACHE`, `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`, `CACHE_TIMEOUT`
 
 ---
 
 ## 🧪 Local Test
-
-After setting up:
 
 ```bash
 python manage.py migrate
@@ -158,20 +164,21 @@ You should be redirected to `/login/` when accessing `/` if unauthenticated.
 
 ---
 
-## 🔐 Security Best Practices
+## 🔐 Caching & Scalability
 
-- CSRF protection is enforced via `CSRF_TRUSTED_ORIGINS`
-- Never disable CSRF middleware globally
-- Avoid hardcoding `SECRET_KEY` in `settings.py`; always use environment variables
+- Redis caching is **toggleable** via `ENABLE_REDIS_CACHE=True|False`
+- Cached data includes gallery views, using a shared `GALLERY_CACHE_KEY`
+- Cache automatically invalidates on image upload, comment, and rating
+- Expiry duration is controlled via `CACHE_TIMEOUT` (in seconds)
 
 ---
 
 ## 📁 Project Structure Highlights
 
 - `users_app`: Registration, login, logout views
-- `pictures_app`: Photo upload, gallery, rating, and comments
-- `templates/`: HTML files for pages and forms
-- `.github/workflows/`: CI/CD pipeline config for Azure
+- `pictures_app`: Upload, gallery, rating, and comments
+- `templates/`: HTML files
+- `.github/workflows/`: CI/CD configuration
 
 ---
 

@@ -162,3 +162,32 @@ LOGIN_URL = '/users/login/'
 
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+
+
+import os
+
+
+# ------------------------- Redis Cache --------------------------------------------------------
+
+ENABLE_REDIS_CACHE = os.getenv("ENABLE_REDIS_CACHE", "False") == "True"
+
+CACHE_TIMEOUT = int(os.getenv("CACHE_TIMEOUT", 300))  # in seconds
+
+if ENABLE_REDIS_CACHE:
+    CACHES = {
+        "default": {
+            "BACKEND": "django_redis.cache.RedisCache",
+            "LOCATION": f"rediss://{os.getenv('REDIS_HOST')}:{os.getenv('REDIS_PORT')}/0",
+            "OPTIONS": {
+                "CLIENT_CLASS": "django_redis.client.DefaultClient",
+                "PASSWORD": os.getenv("REDIS_PASSWORD"),
+                "SSL": True,
+            }
+        }
+    }
+else:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache"
+        }
+    }

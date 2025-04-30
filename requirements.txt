@@ -3,3 +3,4 @@ azure-storage-blob==12.19.1
 python-dotenv==1.0.1  
 pyodbc==5.1.0  
 mssql-django==1.4.0  
+django-redis==5.4.0

@@ -48,6 +48,11 @@ jobs:
           AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
           AZURE_STORAGE_CONTAINER_NAME: ${{ secrets.AZURE_STORAGE_CONTAINER_NAME }}
           CSRF_TRUSTED_ORIGINS: ${{ secrets.CSRF_TRUSTED_ORIGINS }}
+          ENABLE_REDIS_CACHE: ${{ secrets.ENABLE_REDIS_CACHE }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          CACHE_TIMEOUT: ${{ secrets.CACHE_TIMEOUT }}
         run: |
           source venv/bin/activate
           python manage.py migrate --noinput
@@ -66,6 +71,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'myWebAppUlsterScalable01'  # Replace with your actual app name
+          app-name: 'myWebAppUlsterScalable01'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E852983D5AD745A4937CCDD5492304B7 }}
