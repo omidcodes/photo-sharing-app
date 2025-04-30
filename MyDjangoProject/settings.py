@@ -171,7 +171,7 @@ import os
 
 ENABLE_REDIS_CACHE = os.getenv("ENABLE_REDIS_CACHE", "False") == "True"
 
-CACHE_TIMEOUT = int(os.getenv("CACHE_TIMEOUT", 300))  # in seconds
+CACHE_TIMEOUT = CACHE_TIMEOUT = int(os.getenv("CACHE_TIMEOUT") or 300) # in seconds
 
 if ENABLE_REDIS_CACHE:
     CACHES = {
