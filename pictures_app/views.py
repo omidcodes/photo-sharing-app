@@ -1,20 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 
 from pictures_app.utils import upload_picture_to_azure
-from .models import PictureModel, Comment, Rating
+from .models import PictureModel, Rating
 
-from .forms import PictureForm, CommentForm, RatingForm
+from .forms import CommentForm, RatingForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
-from django.contrib.auth.decorators import login_required
-from .forms import CommentForm, RatingForm
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.shortcuts import render, redirect
-from django.db.models import Avg
 
-from django.contrib.auth.decorators import login_required
 from django.core.cache import cache
 from django.views.decorators.cache import never_cache
 from django.conf import settings

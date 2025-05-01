@@ -164,7 +164,6 @@ LOGIN_URL = '/users/login/'
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 
-import os
 
 
 # ------------------------- Redis Cache --------------------------------------------------------
